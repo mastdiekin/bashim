@@ -1,4 +1,4 @@
-![BashRandomQuote](https://github.com/mastdiekin/bashim/blob/master/bashim/screen.png?raw=true)
+![BashRandomQuote](https://github.com/mastdiekin/bashim/blob/master/screen.png?raw=true)
 
 # bash.im random quote
 
