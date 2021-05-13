@@ -6,9 +6,11 @@ from urllib.parse import urljoin
 import requests
 from random import randint
 import bs4
+from fake_useragent import UserAgent
 
+ua = UserAgent()
 URL_BASE = 'https://bash.im'
-USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:83.0) Gecko/20100101 Firefox/83.0'
+USER_AGENT = ua.google
 session = requests.session()
 session.headers['User-Agent'] = USER_AGENT
 
@@ -19,31 +21,10 @@ def parse(obj) -> BeautifulSoup:
 
 class BashRandomQuote:
     def __init__(self) -> None:
-        self.pages_count = 0
-        self.current_page = None
         self.rand_quote = None
         self.quote_rating = None
         self.quote_link = ''
         self.quote = ''
-
-    def start(self,):
-        self.get_pages_count()
-        self.get_random_page()
-
-    def get_pages_count(self):
-        url = URL_BASE
-
-        try:
-            rs = session.get(url)
-            root = parse(rs.content)
-            self.pages_count = int(root.select('.pager__input')[0]['value'])
-
-        except Exception as e:
-            print(e)
-
-    def get_random_page(self,):
-        self.current_page = randint(1, self.pages_count)
-        return self.current_page
 
     def get_random_quote_by_page(self, max_on_page):
         self.rand_quote = randint(0, max_on_page - 1)
@@ -92,7 +73,8 @@ class BashRandomQuote:
 
     def get_random_quote(self, print_=True):
         url = URL_BASE
-        url = urljoin(url, f'/index/{self.current_page}')
+        rnd = randint(0, 10000)
+        url = urljoin(url, f'/random?' + str(rnd))
         try:
             rs = session.get(url)
             root = parse(rs.content)
@@ -122,14 +104,13 @@ class BashRandomQuote:
 
     def print_cite(self,):
         print('\n', self.quote, sep='')
-        print('_'*10, '\n')
+        print('_' * 10, '\n')
         print('Rating:', self.quote_rating)
         print('Link:', self.quote_link)
 
 
 def main():
     m = BashRandomQuote()
-    m.start()
     m.get_random_quote(print_=True)
 
 
