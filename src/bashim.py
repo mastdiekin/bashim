@@ -24,6 +24,7 @@ class BashRandomQuote:
         self.rand_quote = None
         self.quote_rating = None
         self.quote_link = ''
+        self.quote_date = ''
         self.quote = ''
 
     def get_random_quote_by_page(self, max_on_page):
@@ -71,6 +72,15 @@ class BashRandomQuote:
 
         return h
 
+    def get_quote_date(self, header):
+        h = None
+        try:
+            h = header.select('.quote__header_date')[0].text.strip()
+        except Exception as e:
+            print(e)
+
+        return h
+
     def get_random_quote(self, print_=True):
         url = URL_BASE
         rnd = randint(0, 10000)
@@ -89,13 +99,14 @@ class BashRandomQuote:
             footer = quotes[random_q].select_one('.quote__footer')
 
             self.quote_link = self.get_quote_link(header)
+            self.quote_date = self.get_quote_date(header)
             self.quote = self.clear_quote(body)
             self.quote_rating = self.get_quote_rating(footer)
 
             if print_:
                 self.print_cite()
 
-            return self.quote_link, self.quote, self.quote_rating
+            return self.quote_link, self.quote, self.quote_rating, self.quote_date
 
         except Exception as e:
             print(e)
@@ -107,6 +118,7 @@ class BashRandomQuote:
         print('_' * 10, '\n')
         print('Rating:', self.quote_rating)
         print('Link:', self.quote_link)
+        print('Date:', self.quote_date)
 
 
 def main():
